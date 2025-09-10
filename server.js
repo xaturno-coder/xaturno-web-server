@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 
 app.get("/", (req, res) => {
-  res.send("Hello from my Dockerized Web Server 🚀");
+  res.send("Yetslin & Juan Luis <3 - Xaturno");
 });
 
 app.listen(3000, () => {
