@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 
 app.get("/", (req, res) => {
-  res.send("Yetslin & Juan Luis <3 - Xaturno");
+  res.send("XATURNO.MX 2025");
 });
 
 app.listen(3000, () => {
