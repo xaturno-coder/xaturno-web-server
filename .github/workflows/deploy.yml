@@ -10,21 +10,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    # 1️⃣ Checkout repo en Actions
     - name: Checkout repo
       uses: actions/checkout@v3
 
+    # 2️⃣ Login a DockerHub
     - name: Login to DockerHub
       uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+    # 3️⃣ Build Docker image localmente en Actions
     - name: Build Docker image
       run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/xaturno-web-server:latest .
 
+    # 4️⃣ Push Docker image a DockerHub
     - name: Push Docker image
       run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/xaturno-web-server:latest
 
+    # 5️⃣ Copiar repo a EC2
+    - name: Copy repo to EC2
+      uses: appleboy/scp-action@v0.1.4
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        source: "."
+        target: "/home/${{ secrets.EC2_USER }}/xaturno-web-server"
+
+    # 6️⃣ Deploy en EC2 via SSH
     - name: Deploy to AWS EC2
       uses: appleboy/ssh-action@v0.1.7
       with:
@@ -32,6 +47,9 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
+          cd /home/${{ secrets.EC2_USER }}/xaturno-web-server
+          # Crear archivo .env con tu dominio
           echo "DOMAIN=${{ secrets.DOMAIN }}" > .env
+          # Levantar contenedores
           docker-compose -f docker-compose.yml pull
           docker-compose -f docker-compose.yml up -d
