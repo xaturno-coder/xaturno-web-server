@@ -1,7 +1,8 @@
 #!/bin/sh
-# Replace environment variables in nginx.conf
-envsubst '$DOMAIN' < /etc/nginx/conf.d/default.conf > /etc/nginx/conf.d/default.conf.generated
-mv /etc/nginx/conf.d/default.conf.generated /etc/nginx/conf.d/default.conf
+set -e
 
-# Start Nginx
-nginx -g "daemon off;"
+# Substitute environment variables into a new file
+envsubst '$DOMAIN' < /etc/nginx/conf.d/default.conf > /etc/nginx/conf.d/default.generated.conf
+
+# Start Nginx using the generated config
+nginx -g "daemon off;" -c /etc/nginx/conf.d/default.generated.conf
