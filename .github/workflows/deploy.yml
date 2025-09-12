@@ -48,8 +48,6 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
           cd /home/${{ secrets.EC2_USER }}/xaturno-web-server
-          # Crear archivo .env con tu dominio
-          echo "DOMAIN=${{ secrets.DOMAIN }}" > .env
           # Detener contenedores viejos y liberar puertos
           docker-compose down --remove-orphans
           # Traer las últimas imágenes
