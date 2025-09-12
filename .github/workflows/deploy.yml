@@ -50,7 +50,9 @@ jobs:
           cd /home/${{ secrets.EC2_USER }}/xaturno-web-server
           # Crear archivo .env con tu dominio
           echo "DOMAIN=${{ secrets.DOMAIN }}" > .env
-          # Levantar contenedores
-          docker-compose -f docker-compose.yml down
-          docker-compose -f docker-compose.yml pull
-          docker-compose -f docker-compose.yml up -d
+          # Detener contenedores viejos y liberar puertos
+          docker-compose down --remove-orphans
+          # Traer las últimas imágenes
+          docker-compose pull
+          # Levantar contenedores con rebuild de tu app
+          docker-compose up -d --build
