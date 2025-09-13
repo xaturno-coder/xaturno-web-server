@@ -33,20 +33,22 @@ services:
       - ./docker/certbot/conf:/etc/letsencrypt
       - ./docker/certbot/www:/var/www/certbot
     environment:
-      - DOMAIN=xaturno.mx
-      - EMAIL=xaturnowebservices@gmail.com
+      - DOMAIN=tu-dominio.com
+      - EMAIL=tu-email@dominio.com
     entrypoint: >
       /bin/sh -c "
-        # Crear certificados si no existen
         if [ ! -f /etc/letsencrypt/live/$${DOMAIN}/fullchain.pem ]; then
           certbot certonly --webroot -w /var/www/certbot \
             -d $${DOMAIN} -d www.$${DOMAIN} \
-            --email $${EMAIL} --agree-tos --no-eff-email;
+            --email $${EMAIL} \
+            --agree-tos \
+            --non-interactive \
+            --no-eff-email;
         fi;
-        # Loop de renovación
         trap exit TERM;
         while :; do
           sleep 12h & wait $${!};
-          certbot renew --webroot -w /var/www/certbot;
+          certbot renew --webroot -w /var/www/certbot \
+            --non-interactive --agree-tos;
         done;
       "
