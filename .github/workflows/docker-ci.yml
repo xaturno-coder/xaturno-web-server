@@ -30,6 +30,12 @@ jobs:
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            # Pull latest image
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/my-web-server:latest
-            docker stop web || true && docker rm web || true
-            docker run -d -p 80:3000 --name web ${{ secrets.DOCKERHUB_USERNAME }}/my-web-server:latest
+
+            # Stop and remove old container
+            docker stop web || true
+            docker rm web || true
+
+            # Run the container without mapping host ports
+            docker run -d --name web ${{ secrets.DOCKERHUB_USERNAME }}/my-web-server:latest
