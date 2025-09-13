@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   app:
-    build: ./app
+    build: ./src
     container_name: my-web
     expose:
       - "3000"
