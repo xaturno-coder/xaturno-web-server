@@ -38,4 +38,4 @@ jobs:
             docker rm web || true
 
             # Run the container without mapping host ports
-            docker run -d --name web ${{ secrets.DOCKERHUB_USERNAME }}/my-web-server:latest
+            docker run -d --name web --network npm-network ${{ secrets.DOCKERHUB_USERNAME }}/my-web-server:latest
